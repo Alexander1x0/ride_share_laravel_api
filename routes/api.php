@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,19 +15,9 @@ use App\Http\Controllers\Api\AuthController;
 |
 */
 
-// Route::group([
-//     'middleware' => 'api',
-//     'prefix' => 'auth'
-// ], function ($router) {
-//     Route::post('login', [AuthController::class, 'login']);
-//     Route::post('register', [AuthController::class, 'register']);
-//     Route::put('set-password', [AuthController::class, 'setPassword'])->middleware('verify.token');
-//     Route::post('logout', [AuthController::class, 'logout']);
-//     Route::post('refresh', [AuthController::class, 'refresh']);
-//     Route::post('me', [AuthController::class, 'me']);
-// });
-
-Route::controller(AuthController::class)->prefix('auth')->group( function() {
-    Route::post('login', [AuthController::class, 'login']);
-    Route::post('register', [AuthController::class, 'register']);
+Route::controller(AuthController::class)->prefix('auth')->group(function () {
+    Route::post('login', 'login');
+    Route::post('register', 'register');
+    Route::post('verifyEmail', 'emailVerificationSent');
+    Route::post('set-code', 'verifyEmail');
 });

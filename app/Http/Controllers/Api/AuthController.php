@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
+use Str;
+use Mail;
 use App\Models\User;
+use App\Mail\EmailVerification;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\SetPasswordRequest;
+use App\Http\Requests\CodeVerifyRequest;
 use App\Http\Requests\RegisterInfoRequest;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use App\Http\Requests\EmailVerificationSentRequest;
 
 class AuthController extends Controller
 {
@@ -22,12 +25,12 @@ class AuthController extends Controller
         
         // Check If The User Exist
         if (!$user) {
-            return response()->json(["status" => false], 404);
+            return response()->json(["status" => false, "message" => "User Not Found"], 404);
         }
 
         // Check If The Password Is Correct
         if (!Hash::check($request->password, $user->password)) {
-            return response()->json(["status" => false], 401);
+            return response()->json(["status" => false, "message" => "This Is Not The Correct Password"], 401);
         }
 
         // Generate The Token
@@ -71,6 +74,50 @@ class AuthController extends Controller
         }
     }
     
+    public function emailVerificationSent(EmailVerificationSentRequest $request) {
+
+        // Get The User Data
+        $user = User::where('email', $request->email)->first();
+
+        // Check If The User Exist
+        if (!$user) {
+            return response()->json(['status' => false, "message" => "Enter Email That Match With Account"], 404);
+        }
+
+        // Check If Email Already Verified
+        if ($user->email_verified_at) {
+            return response()->json(["status" => true, "message" => "Email Is Already Verified"], 200);
+        }
+
+        // Generate Random Code
+        $email_verification_code = Str::random(6);
+        $user->email_verification_code = $email_verification_code;
+        $user->save();
+
+        // Send The Code To The User Email
+        Mail::to($user->email)->send(new EmailVerification($email_verification_code));
+        return response()->json(["status" => true, "message" => "Code Has Been Sent Successfully"], 200);
+
+    }
+
+    public function verifyEmail(CodeVerifyRequest $request) {
+
+        // Get The User Data
+        $user = User::where('email', $request->email)->where('email_verification_code', $request->email_verification_code)->first();
+        
+        // Check If Invalid Verification Code
+        if (!$user) {
+            return response()->json(["status" => false, "message" => "Invalid Verification code"], 400);
+        }
+
+        // Set Thagt User Email Is Verified Now
+        $user->email_verified_at = now();
+        $user->email_verification_code = null;
+        $user->save();
+        
+        return response()->json(["status" => true, "message" => "Email Verified Successfully"], 200);
+    
+    }
 
     
 }
