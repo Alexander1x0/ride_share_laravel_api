@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\ResetPasswordRequest;
 use Str;
 use Mail;
 use App\Models\User;
@@ -117,6 +118,20 @@ class AuthController extends Controller
         
         return response()->json(["status" => true, "message" => "Email Verified Successfully"], 200);
     
+    }
+
+    public function resetPassword(ResetPasswordRequest $request) {
+        // Get User Data
+        $user = User::where('email', $request->email)->first();
+        // Check If The User Exist
+        if (!$user) {
+            return response()->json(["status" => false, "message" => "User Not Found"], 404);
+        }
+
+        // Update The Password
+        $user->password = Hash::make($request->password);
+        $user->save();
+        return response()->json(["status" => true, "message" => "Password Updated Successfully"], 200);
     }
 
     
