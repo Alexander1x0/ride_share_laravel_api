@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,4 +22,9 @@ Route::controller(AuthController::class)->prefix('auth')->group(function () {
     Route::post('verifyEmail', 'emailVerificationSent');
     Route::post('set-code', 'verifyEmail');
     Route::post('reset-password', 'resetPassword');
+});
+
+Route::controller(ProfileController::class)->prefix('user')->middleware('auth:api')->group(function() {
+    Route::get('show', 'show');
+    Route::put('update', 'update');
 });
