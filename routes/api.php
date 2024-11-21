@@ -26,5 +26,5 @@ Route::controller(AuthController::class)->prefix('auth')->group(function () {
 
 Route::controller(ProfileController::class)->prefix('user')->middleware('auth:api')->group(function() {
     Route::get('show', 'show');
-    Route::put('update', 'update');
+    Route::post('update', 'update');
 });

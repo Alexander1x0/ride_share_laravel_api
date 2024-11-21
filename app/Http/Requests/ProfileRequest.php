@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Log;
 
 class ProfileRequest extends FormRequest
 {
@@ -13,6 +14,7 @@ class ProfileRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        Log::info('Authorize method called with input:', $this->all());
         return true;
     }
 
@@ -23,6 +25,7 @@ class ProfileRequest extends FormRequest
      */
     public function rules(): array
     {
+        Log::info('Validation rules applied for request:', $this->all());
         return [
             "name" => "required|string|max:255",
             "email" => "required|email|unique:users,email," . $this->user()->id ."|bail",
@@ -36,6 +39,7 @@ class ProfileRequest extends FormRequest
         // Get the first error message
         $errorMessage = $validator->errors()->first();
 
+        Log::error('Validation failed:', $validator->errors()->toArray());
         // Throw the exception with only the first error message
         throw new HttpResponseException(
             response()->json([
