@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PaypalController;
+use App\Http\Controllers\Api\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Auth Routes
 Route::controller(AuthController::class)->prefix('auth')->group(function () {
     Route::post('login', 'login');
     Route::post('register', 'register');
@@ -24,7 +26,15 @@ Route::controller(AuthController::class)->prefix('auth')->group(function () {
     Route::post('reset-password', 'resetPassword');
 });
 
+// Profile Routes
 Route::controller(ProfileController::class)->prefix('user')->middleware('auth:api')->group(function() {
     Route::get('show', 'show');
     Route::post('update', 'update');
+});
+
+// Paypal Routes
+Route::controller(PaypalController::class)->prefix('paypal')->group(function () {
+    Route::post('paypal', 'paypal');
+    Route::get('success', 'success')->name('success');
+    Route::get('cancel', 'cancel')->name('cancel');
 });
