@@ -16,16 +16,22 @@ return new class extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->string('from');
             $table->string('to');
-            $table->bigInteger('car_id')->unsigned();
+            $table->bigInteger('transport_id')->unsigned();
+            $table->bigInteger('car_id')->unsigned()->nullable();
+            $table->bigInteger('bike_id')->unsigned()->nullable();
+            $table->bigInteger('cycle_id')->unsigned()->nullable();
+            $table->bigInteger('taxi_id')->unsigned()->nullable();
             $table->string('when');
             $table->date('date');
             $table->string('time');
             $table->float('value');
             $table->string('payment_way');
+            $table->string('status');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('car_id')->references('id')->on('cars')->onDelete('cascade');            
+            $table->foreign('car_id')->references('id')->on('cars')->onDelete('cascade');
+            $table->foreign('transport_id')->references('id')->on('transports')->onDelete('cascade');             
         });
     }
 

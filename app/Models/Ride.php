@@ -13,12 +13,17 @@ class Ride extends Model
         'user_id',
         'from',
         'to',
+        'transport_id',
         'car_id',
+        'bike_id',
+        'cycle_id',
+        'taxi_id',
         'when',
         'date',
         'time',
         'value',
         'payment_way',
+        'status',
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
@@ -31,5 +36,10 @@ class Ride extends Model
     public function car()
     {
         return $this->belongsTo(Car::class);
+    }
+
+    public function transport()
+    {
+        return $this->belongsTo(Transport::class);
     }
 }

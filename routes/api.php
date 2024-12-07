@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\RideController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -30,6 +31,11 @@ Route::controller(AuthController::class)->prefix('auth')->group(function () {
 Route::controller(ProfileController::class)->prefix('user')->middleware('auth:api')->group(function() {
     Route::get('show', 'show');
     Route::post('update', 'update');
+});
+
+// Ride Process Routes
+Route::controller(RideController::class)->prefix('ride')->group(function() {
+    Route::post('details', 'rideDetails');
 });
 
 // Paypal Routes
