@@ -36,6 +36,8 @@ Route::controller(ProfileController::class)->prefix('user')->middleware('auth:ap
 // Ride Process Routes
 Route::controller(RideController::class)->prefix('ride')->group(function() {
     Route::post('details', 'rideDetails');
+    Route::get('transports', 'transports');
+    Route::get('cars', 'getCars');
 });
 
 // Paypal Routes
